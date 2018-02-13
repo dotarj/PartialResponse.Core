@@ -24,7 +24,7 @@ test_script:
 
       $shouldExit = $FALSE;
 
-      foreach ($testFolder in ls *.Tests) {
+      foreach ($testFolder in ls test\*.Tests) {
             Push-Location $testFolder
 
             Write-Host "  > dotnet test $testFolder"
