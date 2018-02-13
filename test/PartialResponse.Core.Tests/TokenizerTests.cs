@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using Xunit;
 
-namespace PartialResponse.Core.Test
+namespace PartialResponse.Core.Tests
 {
     public class TokenizerTests
     {

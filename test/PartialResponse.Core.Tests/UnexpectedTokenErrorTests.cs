@@ -2,7 +2,7 @@
 
 using Xunit;
 
-namespace PartialResponse.Core.Test
+namespace PartialResponse.Core.Tests
 {
     public class UnexpectedTokenErrorTests
     {

@@ -1,13 +1,14 @@
 // Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using PartialResponse.AspNetCore.Mvc.Formatters.Json.Internal;
+using PartialResponse.Net.Http.Formatting;
 using Xunit;
 
-namespace PartialResponse.AspNetCore.Mvc.Formatters.Json
+namespace PartialResponse.Tests
 {
     public class JsonSerializerExtensionsTests
     {
