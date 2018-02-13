@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace PartialResponse.Core.Test
+namespace PartialResponse.Core.Tests
 {
     public class ParserTests
     {
