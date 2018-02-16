@@ -1,3 +1,18 @@
+os: Visual Studio 2017
+
+configuration: Release
+
+environment:
+  CODECOV_UPLOAD_TOKEN:
+    secure: A6EfLnTXlaU17jh59qdcU9dQ7Svr9VVtS7If+Q4WdDh78msCxrf0hWELPY/7W/sz
+
+version: 1.0.0
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+
 before_build:
 - ps: |
       Write-Host "> dotnet restore"
@@ -11,31 +26,46 @@ build_script:
 - ps: |
       Write-Host "> dotnet build"
 
-      dotnet build -c Release -v m 
+      dotnet build -c $env:CONFIGURATION -v m
 
       Write-Host "< dotnet build"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+after_build:
+- ps: |
+      Write-Host "> sn.exe"
+
+      $sn = "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7 Tools\sn.exe"
+
+      foreach ($assembly in ls "src\$env:APPVEYOR_PROJECT_NAME\bin\$env:CONFIGURATION\*\$env:APPVEYOR_PROJECT_NAME.dll") {
+          &$sn -vf $assembly
+
+          if ($LastExitCode -ne 0) { Break }
+      }
+
+      Write-Host "< sn.exe"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
 
 test_script:
 - ps: |
       Write-Host "> dotnet test"
 
-      cd $env:APPVEYOR_BUILD_FOLDER
-
-      $shouldExit = $FALSE;
-
-      foreach ($testFolder in ls test\*.Tests) {
-            Push-Location $testFolder
-
-            Write-Host "  > dotnet test $testFolder"
-
-            dotnet test -c Release
-
-            Write-Host "  < dotnet test $testFolder"
-            if ($LastExitCode -ne 0) { $shouldExit = $TRUE }
-
-            Pop-Location
-      }
+      dotnet test test\$env:APPVEYOR_PROJECT_NAME.Tests -c $env:CONFIGURATION -v m
 
       Write-Host "< dotnet test"
-      if ($shouldExit -eq $TRUE) { $host.SetShouldExit(1) }
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+
+after_test:
+- ps: |
+      Write-Host "> codecov"
+
+      dotnet build -c $env:CONFIGURATION -v m /p:codecov=true
+
+      choco install opencover.portable
+      choco install codecov
+
+      OpenCover.Console.exe -target:"$env:xunit20\xunit.console.x86.exe" -targetargs:"test\$env:APPVEYOR_PROJECT_NAME.Tests\bin\$env:CONFIGURATION\net471\$env:APPVEYOR_PROJECT_NAME.Tests.dll -noshadow" -register:user -filter:"+[*]* -[$env:APPVEYOR_PROJECT_NAME.Tests]*" -hideskipped:All -output:".\coverage.xml"
+      codecov -f coverage.xml -t $env:CODECOV_UPLOAD_TOKEN
+
+      Write-Host "< codecov"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
