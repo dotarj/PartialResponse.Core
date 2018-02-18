@@ -114,3 +114,14 @@ for:
   artifacts:
     - path: artifacts\$(APPVEYOR_PROJECT_NAME).$(APPVEYOR_REPO_TAG_NAME).nupkg
     - path: artifacts\$(APPVEYOR_PROJECT_NAME).$(APPVEYOR_REPO_TAG_NAME).symbols.nupkg
+
+-
+  branches:
+    except:
+      - master
+
+  skip_tags: true
+
+  skip_branch_with_pr: true
+
+  version: ci.{build}
