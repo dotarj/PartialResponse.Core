@@ -121,7 +121,5 @@ for:
 
   skip_tags: true
 
-  skip_branch_with_pr: true
-
   init:
   - ps: Update-AppveyorBuild -Version "dev-$($env:APPVEYOR_REPO_COMMIT.Substring(0, 7))-$env:APPVEYOR_BUILD_NUMBER"
