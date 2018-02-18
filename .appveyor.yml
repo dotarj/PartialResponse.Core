@@ -78,8 +78,7 @@ for:
   skip_non_tags: true
 
   init:
-  - ps: |
-        Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
+  - ps: Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
 
   dotnet_csproj:
     patch: true
@@ -124,4 +123,5 @@ for:
 
   skip_branch_with_pr: true
 
-  version: ci.{build}
+  init:
+  - ps: Update-AppveyorBuild -Version "dev-$($env:APPVEYOR_REPO_COMMIT.Substring(0, 7))-$env:APPVEYOR_BUILD_NUMBER"
