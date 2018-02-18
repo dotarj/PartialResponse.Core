@@ -44,6 +44,18 @@ namespace PartialResponse.Core.Tests
         }
 
         [Fact]
+        public void TheMatchesMethodShouldThrowIfPartsIsNull()
+        {
+            // Arrange
+            string[] parts = null;
+
+            var field = new Field("foo");
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => field.Matches(parts));
+        }
+
+        [Fact]
         public void TheMatchesMethodShouldReturnFalseForDifferentValues()
         {
             // Arrange
