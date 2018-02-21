@@ -1,4 +1,4 @@
-// Copyright (c) Arjen Post. See License.txt and Notice.txt in the project root for license information.
+// Copyright (c) Arjen Post. See License.txt in the project root for license information.
 
 using System;
 using Xunit;
@@ -41,6 +41,18 @@ namespace PartialResponse.Core.Tests
 
             // Assert
             Assert.Equal(new[] { "foo", "bar" }, field.Parts);
+        }
+
+        [Fact]
+        public void TheMatchesMethodShouldThrowIfPartsIsNull()
+        {
+            // Arrange
+            string[] parts = null;
+
+            var field = new Field("foo");
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => field.Matches(parts));
         }
 
         [Fact]
