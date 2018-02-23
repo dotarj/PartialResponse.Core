@@ -1,4 +1,10 @@
-os: Visual Studio 2017
+environment:
+  MYGET_API_KEY:
+    secure: 0g8HFcOKzQ39qyC1Awd9MyIFSssWDrrnLQtRKidK+yjWoXOuQCRSdACponCy/FSd
+  NUGET_API_KEY:
+    secure: y9PmTw5fVUZF+RGc4dV0SACu7RvINu6p5s880Muc/ygYP+fme6DhuNdImpuDCHoX
+
+image: Visual Studio 2017
 
 skip_tags: false
 
@@ -93,7 +99,7 @@ after_test:
 
       dotnet build -c $env:CONFIGURATION --no-restore -v m /p:codecov=true
 
-      OpenCover.Console.exe -target:"$env:XUNIT20\xunit.console.x86.exe" -targetargs:"test\$env:APPVEYOR_PROJECT_NAME.Tests\bin\$env:CONFIGURATION\net471\$env:APPVEYOR_PROJECT_NAME.Tests.dll -noshadow" -register:user -filter:"+[*]* -[$env:APPVEYOR_PROJECT_NAME.Tests]*" -hideskipped:All -output:".\coverage.xml"
+      OpenCover.Console.exe -target:"$env:XUNIT20\xunit.console.x86.exe" -targetargs:"test\$env:APPVEYOR_PROJECT_NAME.Tests\bin\$env:CONFIGURATION\net471\$env:APPVEYOR_PROJECT_NAME.Tests.dll -noshadow" -register:user -filter:"+[*]* -[$env:APPVEYOR_PROJECT_NAME.Tests]* -[$env:APPVEYOR_PROJECT_NAME.Samples]*" -hideskipped:All -output:".\coverage.xml"
 
       Write-Host "FINISHED generating code coverage report" -ForegroundColor Magenta
 
@@ -113,9 +119,16 @@ artifacts:
   - path: artifacts\$(APPVEYOR_PROJECT_NAME).$(RELEASE_VERSION).symbols.nupkg
 
 deploy:
-  provider: NuGet
-  api_key:
-    secure: y9PmTw5fVUZF+RGc4dV0SACu7RvINu6p5s880Muc/ygYP+fme6DhuNdImpuDCHoX
+- provider: NuGet
+  server: https://www.myget.org/F/partialresponse/api/v2
+  api_key: $(MYGET_API_KEY)
+  skip_symbols: false
+  symbol_server: https://www.myget.org/F/partialresponse/symbols/api/v2/package
+  on:
+    appveyor_repo_tag: false
+
+- provider: NuGet
+  api_key: $(NUGET_API_KEY)
   skip_symbols: false
   artifact: /.*\.nupkg/
   on:
