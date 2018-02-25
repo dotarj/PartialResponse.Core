@@ -145,5 +145,19 @@ namespace PartialResponse.Core.Tests
             // Assert
             Assert.True(result);
         }
+
+        [Fact]
+        public void TheToStringMethodShouldReturnValue()
+        {
+            // Arrange
+            var value = "foo/bar";
+            var field = new Field(value);
+
+            // Act
+            var result = field.Matches(new[] { "foo" });
+
+            // Assert
+            Assert.Equal(value, field.ToString());
+        }
     }
 }

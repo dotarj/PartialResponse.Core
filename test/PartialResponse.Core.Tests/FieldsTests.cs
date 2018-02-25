@@ -28,6 +28,37 @@ namespace PartialResponse.Core.Tests
         }
 
         [Fact]
+        public void TheTryParseMethodShouldSetResultToDefaultIfValueIsInvalid()
+        {
+            // Act
+            Fields.TryParse("foo//", out Fields fields);
+
+            // Assert
+            Assert.Equal(default(Fields), fields);
+        }
+
+        [Fact]
+        public void TheTryParseMethodShouldReturnFalseIfValueIsInvalid()
+        {
+            // Act
+            var result = Fields.TryParse("foo//", out Fields fields);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void TheMatchesMethodShouldThrowIfValueIsNull()
+        {
+            // Arrange
+            string value = null;
+            Fields.TryParse("foo", out Fields fields);
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => fields.Matches(value));
+        }
+
+        [Fact]
         public void TheMatchesMethodShouldReturnFalseForDifferentValues()
         {
             // Arrange

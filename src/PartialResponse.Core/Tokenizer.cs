@@ -89,11 +89,6 @@ namespace PartialResponse.Core
 
         private void TakeCharacter()
         {
-            if (this.IsEndReached())
-            {
-                return;
-            }
-
             this.buffer.Append(this.GetCurrentCharacter());
 
             this.source.Read();
